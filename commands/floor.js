@@ -7,13 +7,13 @@ const ttl = 60; //cache for 60 seconds;
 const cache = new CacheService(ttl);
 
 const fetchTokenId = async () => {
-  let url = `https://api.opensea.io/api/v1/assets?order_direction=desc&offset=0&limit=1&collection=${process.env.OPEN_SEA_COLLECTION_NAME}`;
-  let settings = { 
-    method: "GET",
-    headers: {
-      "X-API-KEY": process.env.OPEN_SEA_API_KEY
-    }
-  };
+  let url = `https://api.opensea.io/api/v1/assets?order_direction=desc&offset=0&limit=1&collection=${process.env.OPEN_SEA_COLLECTION_NAME}`; 
+
+  let settings = { method: "GET" };
+  if (process.env.OPEN_SEA_API_KEY)
+  {
+       settings["headers"] = {"X-API-KEY": process.env.OPEN_SEA_API_KEY};
+  }
 
   let res = await fetch(url, settings);
   if (res.status == 404 || res.status == 400)
@@ -22,6 +22,8 @@ const fetchTokenId = async () => {
   }
   if (res.status != 200)
   {
+
+	  console.log(res.status);
     throw new Error(`Couldn't retrieve metadata: ${res.statusText}`);
   }
 
@@ -34,12 +36,12 @@ const fetchFloor = async () => {
   let tokenId = await cache.get("SampleTokenId", fetchTokenId, 0)
 
   let url = `${openseaAssetUrl}/${process.env.CONTRACT_ADDRESS}/${tokenId}`;
-  let settings = { 
-    method: "GET",
-    headers: {
-      "X-API-KEY": process.env.OPEN_SEA_API_KEY
-    }
-  };
+
+  let settings = { method: "GET" };
+  if (process.env.OPEN_SEA_API_KEY)
+  {
+     settings["headers"] = {"X-API-KEY": process.env.OPEN_SEA_API_KEY};
+  }
 
   let res = await fetch(url, settings);
   if (res.status == 404 || res.status == 400)
@@ -47,7 +49,8 @@ const fetchFloor = async () => {
     throw new Error("Token id doesn't exist.");
   }
   if (res.status != 200)
-  {
+  {  
+	  console.log(res.status);
     throw new Error(`Couldn't retrieve metadata: ${res.statusText}`);
   }
 

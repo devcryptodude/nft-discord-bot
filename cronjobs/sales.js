@@ -21,16 +21,17 @@ module.exports = {
     // doing this to try to resolve some intermittent issues with events being missed by the bot, suspect it's due to OpenSea api being slow to update the events data
     // duplicate events are filtered out by the salesCache array
 
-    let offset = 0;
-    let settings = { 
-      method: "GET",
-      headers: {
-        "X-API-KEY": process.env.OPEN_SEA_API_KEY
-      }
-    };
+    let offset = 0; 
+    let settings = { method: "GET" };
+    if (process.env.OPEN_SEA_API_KEY)
+    {
+         settings["headers"] = {"X-API-KEY": process.env.OPEN_SEA_API_KEY};
+    }
+
     while(1)
     {
       let url = `${openseaEventsUrl}?collection_slug=${process.env.OPEN_SEA_COLLECTION_NAME}&event_type=successful&only_opensea=false&offset=${offset}&limit=50&occurred_after=${lastTimestamp}&occurred_before=${newTimestamp}`;
+	    console.log(url);
       try {
         var res = await fetch(url, settings);
         if (res.status != 200) {

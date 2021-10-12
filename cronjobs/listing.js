@@ -22,12 +22,11 @@ module.exports = {
     // duplicate events are filtered out by the listingCache array
 
     let offset = 0;
-    let settings = { 
-      method: "GET",
-      headers: {
-        "X-API-KEY": process.env.OPEN_SEA_API_KEY
-      }
-    };
+    let settings = { method: "GET" };
+    if (process.env.OPEN_SEA_API_KEY)
+    {
+         settings["headers"] = {"X-API-KEY": process.env.OPEN_SEA_API_KEY};
+    }
     while(1)
     {
       let url = `${openseaEventsUrl}?collection_slug=${process.env.OPEN_SEA_COLLECTION_NAME}&event_type=created&only_opensea=false&offset=${offset}&limit=50&occurred_after=${lastTimestamp}&occurred_before=${newTimestamp}`;

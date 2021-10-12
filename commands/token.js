@@ -15,12 +15,11 @@ module.exports = {
     }
 
     let url = `${openseaAssetUrl}/${process.env.CONTRACT_ADDRESS}/${args[0]}`;
-    let settings = { 
-      method: "GET",
-      headers: {
-        "X-API-KEY": process.env.OPEN_SEA_API_KEY
-      }
-    };
+    let settings = { method: "GET" };
+    if (process.env.OPEN_SEA_API_KEY)
+    {
+         settings["headers"] = {"X-API-KEY": process.env.OPEN_SEA_API_KEY};
+    }
     
     fetch(url, settings)
         .then(res => {
